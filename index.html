@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startpage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Kaushan Script';
+            src: url(https://fonts.gstatic.com/s/kaushanscript/v5/qx1LSqts-NtiKcLw4N03IJsM3FTMmj2kTPH3yX99Yaw.woff2) format('woff2');
+        }
+    </style>
+    <style>
+        :root {
+            --color-bg: #282828;
+            --color-fg: #ebdbb2;
+            --color-gradient-fade: #fbf1c7;
+            --color-bar-underline: #1E1E1E;
+            --color-button-bg: #83a598;
+            --color-button-fg: #282828;
+            --color-workspace-button-bg: #504945;
+            --color-workspace-button-hover-bg: #665c54;
+            --color-workspace-button-focused-bg: #83a598;
+            --color-widget-audio-bg: #fabd2f;
+            --color-widget-clock-bg: #d5c4a1;
+            --color-widget-battery-bg: #b8bb26;
+            --color-widget-temperature-bg: #8ec07c;
+            --color-widget-memory-bg: #83a598;
+            --color-widget-backlight-bg: #d3869b;
+            --color-widget-power-bg: #83a598;
+            --color-urgent: #fb4934;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 700;
+            background: var(--color-bg);
+			#background: linear-gradient(135deg, var(--color-bg) 0%, #1d2021 100%);
+            color: var(--color-fg);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(251, 73, 52, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(131, 165, 152, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(250, 189, 47, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-areas: 
+                "search search search search"
+                "time time time time"
+                "bookmarks bookmarks bookmarks bookmarks";
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto 1fr;
+            gap: 2rem;
+            min-height: 100vh;
+            padding-top: 4rem;
+        }
+
+        .search-container {
+            grid-area: search;
+            animation: slideUp 0.8s ease-out 0.2s both;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-box {
+            width: 80%;
+            max-width: 500px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(to top, var(--color-workspace-button-bg), rgba(80, 73, 69, 0.8));
+            border: 2px solid transparent;
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box:focus-within {
+            border-color: var(--color-button-bg);
+            box-shadow: 0 0 30px rgba(131, 165, 152, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .search-icon {
+            margin-right: 1rem;
+            color: var(--color-fg);
+            font-size: 1.2rem;
+        }
+
+        .search-input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--color-fg);
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 700;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: #a89984;
+            font-weight: 400;
+        }
+
+        .bookmarks {
+            grid-area: bookmarks;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            animation: fadeIn 0.8s ease-out 0.4s both;
+        }
+
+        .bookmark-group {
+            background: linear-gradient(to top, var(--color-workspace-button-bg), rgba(80, 73, 69, 0.6));
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(235, 219, 178, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            height: fit-content;
+        }
+
+        .bookmark-group::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--color-button-bg), var(--color-widget-audio-bg), var(--color-widget-battery-bg));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .bookmark-group:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(235, 219, 178, 0.2);
+        }
+
+        .bookmark-group:hover::before {
+            opacity: 1;
+        }
+
+        .bookmark-group h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--color-fg);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .bookmark-icon {
+            width: 20px;
+            height: 20px;
+            padding: 3px;
+            border-radius: 5px;
+            background: var(--color-button-bg);
+            color: var(--color-button-fg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .bookmark-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .bookmark-link {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.6rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--color-fg);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .bookmark-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(235, 219, 178, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .bookmark-link:hover {
+            background: linear-gradient(to right, var(--color-workspace-button-hover-bg), rgba(102, 92, 84, 0.8));
+            transform: translateX(8px);
+        }
+
+        .bookmark-link:hover::before {
+            left: 100%;
+        }
+
+        .bookmark-link-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: var(--color-workspace-button-hover-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .bookmark-link:hover .bookmark-link-icon {
+            background: var(--color-button-bg);
+            color: var(--color-button-fg);
+            transform: scale(1.1);
+        }
+
+        .bookmark-link-text {
+            flex: 1;
+            font-weight: 400;
+            font-size: 0.95rem;
+        }
+
+        .time-info {
+            grid-area: time;
+            animation: slideUp 0.8s ease-out 0.6s both;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .time-widget {
+            text-align: center;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(to top, var(--color-workspace-button-bg), rgba(80, 73, 69, 0.8));
+            color: var(--color-fg);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            width: 80%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: fit-content;
+        }
+
+        .time-widget:hover {
+            border-color: var(--color-button-bg);
+            box-shadow: 0 0 30px rgba(131, 165, 152, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .time-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .time-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.2rem;
+        }
+
+        .time-label {
+            font-size: 0.8rem;
+            font-weight: 400;
+            opacity: 0.7;
+            line-height: 1;
+        }
+
+        .time-divider {
+            width: 1px;
+            height: 40px;
+            background: rgba(235, 219, 178, 0.3);
+            margin: 0 1rem;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .bookmarks {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+                gap: 1.5rem;
+                padding-top: 2rem;
+            }
+            
+            .bookmarks {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .search-box,
+            .time-widget {
+                width: 95%;
+                padding: 0.8rem 1rem;
+            }
+            
+            .time-widget {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .time-divider {
+                display: none;
+            }
+            
+            .time-section {
+                flex-direction: row;
+                justify-content: space-between;
+                width: 100%;
+            }
+            
+            .time-value {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--color-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-workspace-button-bg);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-workspace-button-hover-bg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-container">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Search the web..." id="searchInput">
+            </div>
+        </div>
+
+        <div class="bookmarks">
+            <div class="bookmark-group">
+                <h3><span class="bookmark-icon">💻</span>Development</h3>
+                <div class="bookmark-links">
+                    <div class="bookmark-link" data-url="https://github.com">
+                        <div class="bookmark-link-icon">🐙</div>
+                        <span class="bookmark-link-text">GitHub</span>
+                    </div>
+                    <div class="bookmark-link" data-url="https://stackoverflow.com">
+                        <div class="bookmark-link-icon">📚</div>
+                        <span class="bookmark-link-text">Stack Overflow</span>
+                    </div>
+                    <div class="bookmark-link" data-url="https://docs.hyprland.org">
+                        <div class="bookmark-link-icon">🐧</div>
+                        <span class="bookmark-link-text">Linux From Scratch</span>
+                    </div>
+                    <div class="bookmark-link" data-url="https://wiki.gentoo.org">
+                        <div class="bookmark-link-icon">🎀</div>
+                        <span class="bookmark-link-text">Gentoo Wiki</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bookmark-group">
+                <h3><span class="bookmark-icon">🎵</span>Media</h3>
+                <div class="bookmark-links">
+                    <div class="bookmark-link" data-url="https://youtube.com">
+                        <div class="bookmark-link-icon">📺</div>
+                        <span class="bookmark-link-text">YouTube</span>
+                    </div>
+                    <div class="bookmark-link" data-url="https://4chan.org/tv/">
+                        <div class="bookmark-link-icon">🎵</div>
+                        <span class="bookmark-link-text">/tv/</span>
+                    </div>
+                    <div class="bookmark-link" data-url="https://rumble.com">
+                        <div class="bookmark-link-icon">🍋‍🟩</div>
+                        <span class="bookmark-link-text">Rumble</span>
+                    </div>
+                    <div class="bookmark-link" data-url="https://reddit.com">
+                        <div class="bookmark-link-icon">🔗</div>
+                        <span class="bookmark-link-text">Reddit</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bookmark-group">
+                <h3><span class="bookmark-icon">🛠️</span>Tools</h3>
+                <div class="bookmark-links">
+                    <div class="bookmark-link" data-url="https://gmail.com">
+                        <div class="bookmark-link-icon">📧</div>
+                        <span class="bookmark-link-text">Gmail</span>
+                    </div>
+                    <div class="bookmark-link" data-url="https://drive.google.com">
+                        <div class="bookmark-link-icon">☁️</div>
+                        <span class="bookmark-link-text">Google Drive</span>
+                    </div>
+                    <div class="bookmark-link" data-url="https://notion.so">
+                        <div class="bookmark-link-icon">📝</div>
+                        <span class="bookmark-link-text">Notion</span>
+                    </div>
+                    <div class="bookmark-link" data-url="https://discord.com">
+                        <div class="bookmark-link-icon">💬</div>
+                        <span class="bookmark-link-text">Discord</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bookmark-group">
+                <h3><span class="bookmark-icon">🌐</span>News & Social</h3>
+                <div class="bookmark-links">
+                    <div class="bookmark-link" data-url="https://8kun.top/pol/">
+                        <div class="bookmark-link-icon">🎭</div>
+                        <span class="bookmark-link-text">/p8l/</span>
+                    </div>
+                    <div class="bookmark-link" data-url="https://news.ycombinator.com">
+                        <div class="bookmark-link-icon">🔥</div>
+                        <span class="bookmark-link-text">Hacker News</span>
+                    </div>
+                    <div class="bookmark-link" data-url="https://4chan.org/g/">
+                        <div class="bookmark-link-icon">🖥️</div>
+                        <span class="bookmark-link-text">/g/</span>
+                    </div>
+                    <div class="bookmark-link" data-url="https://4chan.org/pol/">
+                        <div class="bookmark-link-icon">💼</div>
+                        <span class="bookmark-link-text">/pol/</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="time-info">
+            <div class="time-widget">
+                <div class="time-section">
+                    <div class="time-value" id="time">00:00</div>
+                    <div class="time-label">Time</div>
+                </div>
+                <div class="time-divider"></div>
+                <div class="time-section">
+                    <div class="time-value" id="date">Jan 1</div>
+                    <div class="time-label">Date</div>
+                </div>
+                <div class="time-divider"></div>
+                <div class="time-section">
+                    <div class="time-value" id="day">Monday</div>
+                    <div class="time-label">Day</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // LibreWolf-compatible navigation
+        function navigateToUrl(url) {
+            // Create a temporary anchor element to trigger navigation
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            
+            // Try multiple methods to ensure compatibility
+            try {
+                // Method 1: Direct window.open
+                window.open(url, '_blank', 'noopener,noreferrer');
+            } catch (e) {
+                try {
+                    // Method 2: Programmatic click
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } catch (e2) {
+                    // Method 3: Location assignment as fallback
+                    window.location.assign(url);
+                }
+            }
+        }
+
+        // Add click handlers to all bookmark links
+        document.querySelectorAll('.bookmark-link[data-url]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = this.getAttribute('data-url');
+                navigateToUrl(url);
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value.trim();
+                if (query) {
+                    window.open(`https://duckduckgo.com/?q=${encodeURIComponent(query)}`, '_self');
+                }
+            }
+        });
+
+        // Time and date updates
+        function updateTime() {
+            const now = new Date();
+            
+            // Update time
+            const timeStr = now.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('time').textContent = timeStr;
+            
+            // Update date
+            const dateStr = now.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
+            });
+            document.getElementById('date').textContent = dateStr;
+            
+            // Update day
+            const dayStr = now.toLocaleDateString('en-US', {
+                weekday: 'long'
+            });
+            document.getElementById('day').textContent = dayStr;
+        }
+
+        // Update time immediately and then every second
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Add some interactive particles effect
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.width = '2px';
+            particle.style.height = '2px';
+            particle.style.background = '#ebdbb2';
+            particle.style.opacity = '0.3';
+            particle.style.borderRadius = '50%';
+            particle.style.pointerEvents = 'none';
+            particle.style.zIndex = '0';
+            
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            
+            document.body.appendChild(particle);
+            
+            // Animate particle
+            const duration = 3000 + Math.random() * 2000;
+            const animation = particle.animate([
+                { transform: 'translateY(0px)', opacity: 0.3 },
+                { transform: 'translateY(-100px)', opacity: 0 }
+            ], {
+                duration: duration,
+                easing: 'ease-out'
+            });
+            
+            animation.addEventListener('finish', () => {
+                particle.remove();
+            });
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 2000);
+        
+        // Focus search input on '/' key press
+        document.addEventListener('keydown', function(e) {
+            if (e.key === '/' && e.target !== searchInput) {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
