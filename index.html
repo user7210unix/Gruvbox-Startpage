@@ -3,35 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Startpage</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>~/.startpage</title>
     <style>
         @font-face {
-            font-family: 'Kaushan Script';
-            src: url(https://fonts.gstatic.com/s/kaushanscript/v5/qx1LSqts-NtiKcLw4N03IJsM3FTMmj2kTPH3yX99Yaw.woff2) format('woff2');
-        }
-    </style>
-    <style>
-        :root {
-            --color-bg: #282828;
-            --color-fg: #ebdbb2;
-            --color-gradient-fade: #fbf1c7;
-            --color-bar-underline: #1E1E1E;
-            --color-button-bg: #83a598;
-            --color-button-fg: #282828;
-            --color-workspace-button-bg: #504945;
-            --color-workspace-button-hover-bg: #665c54;
-            --color-workspace-button-focused-bg: #83a598;
-            --color-widget-audio-bg: #fabd2f;
-            --color-widget-clock-bg: #d5c4a1;
-            --color-widget-battery-bg: #b8bb26;
-            --color-widget-temperature-bg: #8ec07c;
-            --color-widget-memory-bg: #83a598;
-            --color-widget-backlight-bg: #d3869b;
-            --color-widget-power-bg: #83a598;
-            --color-urgent: #fb4934;
+            font-family: 'FantasqueSansMono';
+            src: url('fonts/FantasqueSansMNerdFont-Regular.ttf');
         }
 
         * {
@@ -41,625 +17,563 @@
         }
 
         body {
-            font-family: "JetBrains Mono", monospace;
-            font-weight: 700;
-            background: var(--color-bg);
-			#background: linear-gradient(135deg, var(--color-bg) 0%, #1d2021 100%);
-            color: var(--color-fg);
-            min-height: 100vh;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 20% 50%, rgba(251, 73, 52, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, rgba(131, 165, 152, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 40% 80%, rgba(250, 189, 47, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1.5rem;
-            position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-areas: 
-                "search search search search"
-                "time time time time"
-                "bookmarks bookmarks bookmarks bookmarks";
-            grid-template-columns: 1fr;
-            grid-template-rows: auto auto 1fr;
-            gap: 2rem;
-            min-height: 100vh;
-            padding-top: 4rem;
-        }
-
-        .search-container {
-            grid-area: search;
-            animation: slideUp 0.8s ease-out 0.2s both;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .search-box {
-            width: 80%;
-            max-width: 500px;
-            position: relative;
-            display: flex;
-            align-items: center;
-            background: linear-gradient(to top, var(--color-workspace-button-bg), rgba(80, 73, 69, 0.8));
-            border: 2px solid transparent;
-            border-radius: 15px;
-            padding: 1rem 1.5rem;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .search-box:focus-within {
-            border-color: var(--color-button-bg);
-            box-shadow: 0 0 30px rgba(131, 165, 152, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .search-icon {
-            margin-right: 1rem;
-            color: var(--color-fg);
-            font-size: 1.2rem;
-        }
-
-        .search-input {
-            flex: 1;
-            background: none;
-            border: none;
-            color: var(--color-fg);
-            font-family: inherit;
-            font-size: 1.1rem;
-            font-weight: 700;
-            outline: none;
-        }
-
-        .search-input::placeholder {
-            color: #a89984;
-            font-weight: 400;
-        }
-
-        .bookmarks {
-            grid-area: bookmarks;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            animation: fadeIn 0.8s ease-out 0.4s both;
-        }
-
-        .bookmark-group {
-            background: linear-gradient(to top, var(--color-workspace-button-bg), rgba(80, 73, 69, 0.6));
-            border-radius: 16px;
-            padding: 1.5rem;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(235, 219, 178, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            height: fit-content;
-        }
-
-        .bookmark-group::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--color-button-bg), var(--color-widget-audio-bg), var(--color-widget-battery-bg));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .bookmark-group:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border-color: rgba(235, 219, 178, 0.2);
-        }
-
-        .bookmark-group:hover::before {
-            opacity: 1;
-        }
-
-        .bookmark-group h3 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--color-fg);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .bookmark-icon {
-            width: 20px;
-            height: 20px;
-            padding: 3px;
-            border-radius: 5px;
-            background: var(--color-button-bg);
-            color: var(--color-button-fg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-        }
-
-        .bookmark-links {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
-        .bookmark-link {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.6rem;
-            border-radius: 10px;
-            text-decoration: none;
-            color: var(--color-fg);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .bookmark-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(235, 219, 178, 0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .bookmark-link:hover {
-            background: linear-gradient(to right, var(--color-workspace-button-hover-bg), rgba(102, 92, 84, 0.8));
-            transform: translateX(8px);
-        }
-
-        .bookmark-link:hover::before {
-            left: 100%;
-        }
-
-        .bookmark-link-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 7px;
-            background: var(--color-workspace-button-hover-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #1d2021;
+            color: #ebdbb2;
+            font-family: 'FantasqueSansMono', 'Courier New', monospace;
             font-size: 14px;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .bookmark-link:hover .bookmark-link-icon {
-            background: var(--color-button-bg);
-            color: var(--color-button-fg);
-            transform: scale(1.1);
-        }
-
-        .bookmark-link-text {
-            flex: 1;
-            font-weight: 400;
-            font-size: 0.95rem;
-        }
-
-        .time-info {
-            grid-area: time;
-            animation: slideUp 0.8s ease-out 0.6s both;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .time-widget {
-            text-align: center;
-            padding: 1rem 1.5rem;
-            background: linear-gradient(to top, var(--color-workspace-button-bg), rgba(80, 73, 69, 0.8));
-            color: var(--color-fg);
-            border-radius: 15px;
-            transition: all 0.3s ease;
-            width: 80%;
-            max-width: 500px;
-            backdrop-filter: blur(10px);
-            border: 2px solid transparent;
+        /* Header */
+        .header {
+            background: #282828;
+            border-bottom: 2px solid #3c3836;
+            padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: fit-content;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .time-widget:hover {
-            border-color: var(--color-button-bg);
-            box-shadow: 0 0 30px rgba(131, 165, 152, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .time-section {
+        .header-left {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            flex: 1;
+            gap: 15px;
         }
 
-        .time-value {
-            font-size: 1.4rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 0.2rem;
+        .evil-tag {
+            background: #d65d0e;
+            color: #282828;
+            padding: 4px 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
 
-        .time-label {
-            font-size: 0.8rem;
-            font-weight: 400;
-            opacity: 0.7;
-            line-height: 1;
+        .buffer-name {
+            color: #ebdbb2;
+            font-weight: bold;
         }
 
-        .time-divider {
-            width: 1px;
-            height: 40px;
-            background: rgba(235, 219, 178, 0.3);
-            margin: 0 1rem;
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .time {
+            color: #fabd2f;
+            font-weight: bold;
+            font-size: 15px;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .date {
+            color: #928374;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        /* Search bar */
+        .search-container {
+            max-width: 900px;
+            margin: 50px auto 40px;
+            padding: 0 24px;
         }
 
-        /* Responsive design */
-        @media (max-width: 1200px) {
-            .bookmarks {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-                gap: 1.5rem;
-                padding-top: 2rem;
-            }
-            
-            .bookmarks {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            
-            .search-box,
-            .time-widget {
-                width: 95%;
-                padding: 0.8rem 1rem;
-            }
-            
-            .time-widget {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .time-divider {
-                display: none;
-            }
-            
-            .time-section {
-                flex-direction: row;
-                justify-content: space-between;
-                width: 100%;
-            }
-            
-            .time-value {
-                font-size: 1.2rem;
-            }
+        .search-prompt {
+            color: #fabd2f;
+            margin-bottom: 10px;
+            font-weight: bold;
         }
 
-        /* Custom scrollbar */
+        #searchInput {
+            width: 100%;
+            background: #282828;
+            border: 2px solid #3c3836;
+            color: #ebdbb2;
+            padding: 14px 18px;
+            font-family: 'FantasqueSansMono', monospace;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        #searchInput:focus {
+            border-color: #fe8019;
+            box-shadow: 0 0 0 1px #fe8019;
+        }
+
+        #searchInput::placeholder {
+            color: #665c54;
+        }
+
+        .search-hint {
+            color: #928374;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        /* Folders container */
+        .folders-container {
+            max-width: 1400px;
+            margin: 0 auto 80px;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* Folder styling */
+        .folder {
+            background: #282828;
+            border: 1px solid #504945;
+            transition: border-color 0.2s;
+        }
+
+        .folder:hover {
+            border-color: #665c54;
+        }
+
+        .folder-header {
+            padding: 14px 18px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #3c3836;
+            user-select: none;
+            background: #32302f;
+        }
+
+        .folder-header:hover {
+            background: #3c3836;
+        }
+
+        .folder-title {
+            font-weight: bold;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .folder-icon {
+            font-size: 18px;
+        }
+
+        .folder-toggle {
+            color: #928374;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        .folder.closed .folder-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .folder-content {
+            max-height: 600px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .folder.closed .folder-content {
+            max-height: 0;
+        }
+
+        .folder-links {
+            padding: 6px;
+        }
+
+        .folder-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            color: #ebdbb2;
+            text-decoration: none;
+            border-left: 2px solid transparent;
+            transition: all 0.15s;
+        }
+
+        .folder-link .link-icon {
+            color: #665c54;
+            font-size: 14px;
+            width: 16px;
+        }
+
+        .folder-link:hover {
+            background: #3c3836;
+            border-left-color: #fe8019;
+            color: #fabd2f;
+        }
+
+        .folder-link:hover .link-icon {
+            color: #fe8019;
+        }
+
+        /* Category colors */
+        .folder.reddit .folder-title { color: #ff8019; }
+        .folder.reddit .folder-icon { color: #ff8019; }
+
+        .folder.chan .folder-title { color: #b8bb26; }
+        .folder.chan .folder-icon { color: #b8bb26; }
+
+        .folder.forums .folder-title { color: #83a598; }
+        .folder.forums .folder-icon { color: #83a598; }
+
+        .folder.youtube .folder-title { color: #fb4934; }
+        .folder.youtube .folder-icon { color: #fb4934; }
+
+        /* Modeline footer */
+        .modeline {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #3c3836;
+            border-top: 2px solid #504945;
+            padding: 8px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .modeline-left {
+            display: flex;
+            gap: 15px;
+        }
+
+        .modeline-item {
+            color: #928374;
+        }
+
+        .modeline-item.active {
+            color: #fe8019;
+            font-weight: bold;
+        }
+
+        /* Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 12px;
         }
 
         ::-webkit-scrollbar-track {
-            background: var(--color-bg);
+            background: #282828;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: var(--color-workspace-button-bg);
-            border-radius: 4px;
+            background: #504945;
+            border: 2px solid #282828;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--color-workspace-button-hover-bg);
+            background: #665c54;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .folders-container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="search-container">
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" class="search-input" placeholder="Search the web..." id="searchInput">
-            </div>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="evil-tag">NORMAL</div>
+            <div class="buffer-name">~/.startpage</div>
         </div>
+        <div class="header-right">
+            <div class="date" id="date"></div>
+            <div class="time" id="time"></div>
+        </div>
+    </div>
 
-        <div class="bookmarks">
-            <div class="bookmark-group">
-                <h3><span class="bookmark-icon">💻</span>Development</h3>
-                <div class="bookmark-links">
-                    <div class="bookmark-link" data-url="https://github.com">
-                        <div class="bookmark-link-icon">🐙</div>
-                        <span class="bookmark-link-text">GitHub</span>
-                    </div>
-                    <div class="bookmark-link" data-url="https://stackoverflow.com">
-                        <div class="bookmark-link-icon">📚</div>
-                        <span class="bookmark-link-text">Stack Overflow</span>
-                    </div>
-                    <div class="bookmark-link" data-url="https://docs.hyprland.org">
-                        <div class="bookmark-link-icon">🐧</div>
-                        <span class="bookmark-link-text">Linux From Scratch</span>
-                    </div>
-                    <div class="bookmark-link" data-url="https://wiki.gentoo.org">
-                        <div class="bookmark-link-icon">🎀</div>
-                        <span class="bookmark-link-text">Gentoo Wiki</span>
-                    </div>
+    <!-- Search bar -->
+    <div class="search-container">
+        <div class="search-prompt">M-x web-search:</div>
+        <input type="text" id="searchInput" placeholder="Type to search... (Space to activate)" autofocus>
+        <div class="search-hint">
+            SPC → search | g/ → 4chan | r/ → reddit | yt/ → youtube | ESC → clear
+        </div>
+    </div>
+
+    <!-- Folders -->
+    <div class="folders-container">
+        <!-- Reddit Folder -->
+        <div class="folder reddit">
+            <div class="folder-header" onclick="toggleFolder(this)">
+                <div class="folder-title">
+                    <span class="folder-icon"></span>
+                    reddit
                 </div>
+                <div class="folder-toggle">󰅀</div>
             </div>
-
-            <div class="bookmark-group">
-                <h3><span class="bookmark-icon">🎵</span>Media</h3>
-                <div class="bookmark-links">
-                    <div class="bookmark-link" data-url="https://youtube.com">
-                        <div class="bookmark-link-icon">📺</div>
-                        <span class="bookmark-link-text">YouTube</span>
-                    </div>
-                    <div class="bookmark-link" data-url="https://4chan.org/tv/">
-                        <div class="bookmark-link-icon">🎵</div>
-                        <span class="bookmark-link-text">/tv/</span>
-                    </div>
-                    <div class="bookmark-link" data-url="https://rumble.com">
-                        <div class="bookmark-link-icon">🍋‍🟩</div>
-                        <span class="bookmark-link-text">Rumble</span>
-                    </div>
-                    <div class="bookmark-link" data-url="https://reddit.com">
-                        <div class="bookmark-link-icon">🔗</div>
-                        <span class="bookmark-link-text">Reddit</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bookmark-group">
-                <h3><span class="bookmark-icon">🛠️</span>Tools</h3>
-                <div class="bookmark-links">
-                    <div class="bookmark-link" data-url="https://gmail.com">
-                        <div class="bookmark-link-icon">📧</div>
-                        <span class="bookmark-link-text">Gmail</span>
-                    </div>
-                    <div class="bookmark-link" data-url="https://drive.google.com">
-                        <div class="bookmark-link-icon">☁️</div>
-                        <span class="bookmark-link-text">Google Drive</span>
-                    </div>
-                    <div class="bookmark-link" data-url="https://notion.so">
-                        <div class="bookmark-link-icon">📝</div>
-                        <span class="bookmark-link-text">Notion</span>
-                    </div>
-                    <div class="bookmark-link" data-url="https://discord.com">
-                        <div class="bookmark-link-icon">💬</div>
-                        <span class="bookmark-link-text">Discord</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bookmark-group">
-                <h3><span class="bookmark-icon">🌐</span>News & Social</h3>
-                <div class="bookmark-links">
-                    <div class="bookmark-link" data-url="https://8kun.top/pol/">
-                        <div class="bookmark-link-icon">🎭</div>
-                        <span class="bookmark-link-text">/p8l/</span>
-                    </div>
-                    <div class="bookmark-link" data-url="https://news.ycombinator.com">
-                        <div class="bookmark-link-icon">🔥</div>
-                        <span class="bookmark-link-text">Hacker News</span>
-                    </div>
-                    <div class="bookmark-link" data-url="https://4chan.org/g/">
-                        <div class="bookmark-link-icon">🖥️</div>
-                        <span class="bookmark-link-text">/g/</span>
-                    </div>
-                    <div class="bookmark-link" data-url="https://4chan.org/pol/">
-                        <div class="bookmark-link-icon">💼</div>
-                        <span class="bookmark-link-text">/pol/</span>
-                    </div>
+            <div class="folder-content">
+                <div class="folder-links">
+                    <a href="https://reddit.com/r/unixporn" class="folder-link">
+                        <span class="link-icon">󰑓</span>
+                        r/unixporn
+                    </a>
+                    <a href="https://reddit.com/r/unixart" class="folder-link">
+                        <span class="link-icon">󰑓</span>
+                        r/unixart
+                    </a>
+                    <a href="https://reddit.com/r/emacs" class="folder-link">
+                        <span class="link-icon">󰑓</span>
+                        r/emacs
+                    </a>
+                    <a href="https://reddit.com/r/linux" class="folder-link">
+                        <span class="link-icon">󰑓</span>
+                        r/linux
+                    </a>
+                    <a href="https://reddit.com/r/archlinux" class="folder-link">
+                        <span class="link-icon">󰑓</span>
+                        r/archlinux
+                    </a>
+                    <a href="https://reddit.com/r/programming" class="folder-link">
+                        <span class="link-icon">󰑓</span>
+                        r/programming
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div class="time-info">
-            <div class="time-widget">
-                <div class="time-section">
-                    <div class="time-value" id="time">00:00</div>
-                    <div class="time-label">Time</div>
+        <!-- 4chan Folder -->
+        <div class="folder chan">
+            <div class="folder-header" onclick="toggleFolder(this)">
+                <div class="folder-title">
+                    <span class="folder-icon"></span>
+                    4chan
                 </div>
-                <div class="time-divider"></div>
-                <div class="time-section">
-                    <div class="time-value" id="date">Jan 1</div>
-                    <div class="time-label">Date</div>
+                <div class="folder-toggle">󰅀</div>
+            </div>
+            <div class="folder-content">
+                <div class="folder-links">
+                    <a href="https://boards.4chan.org/g/" class="folder-link">
+                        <span class="link-icon"></span>
+                        /g/ - Technology
+                    </a>
+                    <a href="https://boards.4chan.org/pol/" class="folder-link">
+                        <span class="link-icon"></span>
+                        /pol/ - Politics
+                    </a>
+                    <a href="https://boards.4chan.org/wg/" class="folder-link">
+                        <span class="link-icon"></span>
+                        /wg/ - Wallpapers
+                    </a>
+                    <a href="https://boards.4chan.org/lit/" class="folder-link">
+                        <span class="link-icon"></span>
+                        /lit/ - Literature
+                    </a>
+                    <a href="https://boards.4chan.org/diy/" class="folder-link">
+                        <span class="link-icon"></span>
+                        /diy/ - DIY
+                    </a>
                 </div>
-                <div class="time-divider"></div>
-                <div class="time-section">
-                    <div class="time-value" id="day">Monday</div>
-                    <div class="time-label">Day</div>
+            </div>
+        </div>
+
+        <!-- Forums Folder -->
+        <div class="folder forums">
+            <div class="folder-header" onclick="toggleFolder(this)">
+                <div class="folder-title">
+                    <span class="folder-icon"></span>
+                    docs/forums
+                </div>
+                <div class="folder-toggle">󰅀</div>
+            </div>
+            <div class="folder-content">
+                <div class="folder-links">
+                    <a href="https://www.gnu.org/software/emacs/manual/" class="folder-link">
+                        <span class="link-icon"></span>
+                        Emacs Manual
+                    </a>
+                    <a href="https://www.linuxfromscratch.org/lfs/" class="folder-link">
+                        <span class="link-icon"></span>
+                        Linux From Scratch
+                    </a>
+                    <a href="https://wiki.gentoo.org/" class="folder-link">
+                        <span class="link-icon"></span>
+                        Gentoo Wiki
+                    </a>
+                    <a href="https://wiki.archlinux.org/" class="folder-link">
+                        <span class="link-icon"></span>
+                        Arch Wiki
+                    </a>
+                    <a href="https://stackoverflow.com/" class="folder-link">
+                        <span class="link-icon"></span>
+                        Stack Overflow
+                    </a>
+                    <a href="https://news.ycombinator.com/" class="folder-link">
+                        <span class="link-icon">󰈤</span>
+                        Hacker News
+                    </a>
+                    <a href="https://lobste.rs/" class="folder-link">
+                        <span class="link-icon"></span>
+                        Lobsters
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- YouTube Folder -->
+        <div class="folder youtube">
+            <div class="folder-header" onclick="toggleFolder(this)">
+                <div class="folder-title">
+                    <span class="folder-icon">󰗃</span>
+                    youtube
+                </div>
+                <div class="folder-toggle">󰅀</div>
+            </div>
+            <div class="folder-content">
+                <div class="folder-links">
+                    <a href="https://youtube.com/feed/subscriptions" class="folder-link">
+                        <span class="link-icon">󰓎</span>
+                        Subscriptions
+                    </a>
+                    <a href="https://youtube.com/" class="folder-link">
+                        <span class="link-icon">󰋜</span>
+                        Home
+                    </a>
+                    <a href="https://youtube.com/feed/trending" class="folder-link">
+                        <span class="link-icon">󰚰</span>
+                        Trending
+                    </a>
+                    <a href="https://youtube.com/feed/library" class="folder-link">
+                        <span class="link-icon">󰉉</span>
+                        Library
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Modeline footer -->
+    <div class="modeline">
+        <div class="modeline-left">
+            <span class="modeline-item active">~/.startpage</span>
+            <span class="modeline-item">UTF-8</span>
+            <span class="modeline-item" id="position">1:0</span>
+        </div>
+        <div>
+            <span class="modeline-item">Gruvbox Fall 🍂</span>
+        </div>
+    </div>
+
     <script>
-        // LibreWolf-compatible navigation
-        function navigateToUrl(url) {
-            // Create a temporary anchor element to trigger navigation
-            const link = document.createElement('a');
-            link.href = url;
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
-            
-            // Try multiple methods to ensure compatibility
-            try {
-                // Method 1: Direct window.open
-                window.open(url, '_blank', 'noopener,noreferrer');
-            } catch (e) {
-                try {
-                    // Method 2: Programmatic click
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                } catch (e2) {
-                    // Method 3: Location assignment as fallback
-                    window.location.assign(url);
-                }
-            }
-        }
-
-        // Add click handlers to all bookmark links
-        document.querySelectorAll('.bookmark-link[data-url]').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const url = this.getAttribute('data-url');
-                navigateToUrl(url);
-            });
-        });
-
-        // Search functionality
-        const searchInput = document.getElementById('searchInput');
-        
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const query = this.value.trim();
-                if (query) {
-                    window.open(`https://duckduckgo.com/?q=${encodeURIComponent(query)}`, '_self');
-                }
-            }
-        });
-
-        // Time and date updates
+        // Update time and date
         function updateTime() {
             const now = new Date();
-            
-            // Update time
-            const timeStr = now.toLocaleTimeString('en-US', {
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit'
+            const timeStr = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+            const dateStr = now.toLocaleDateString('en-US', { 
+                weekday: 'short',
+                month: 'short', 
+                day: 'numeric',
+                year: 'numeric'
             });
             document.getElementById('time').textContent = timeStr;
-            
-            // Update date
-            const dateStr = now.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric'
-            });
             document.getElementById('date').textContent = dateStr;
-            
-            // Update day
-            const dayStr = now.toLocaleDateString('en-US', {
-                weekday: 'long'
-            });
-            document.getElementById('day').textContent = dayStr;
         }
-
-        // Update time immediately and then every second
         updateTime();
         setInterval(updateTime, 1000);
 
-        // Add some interactive particles effect
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.style.position = 'fixed';
-            particle.style.width = '2px';
-            particle.style.height = '2px';
-            particle.style.background = '#ebdbb2';
-            particle.style.opacity = '0.3';
-            particle.style.borderRadius = '50%';
-            particle.style.pointerEvents = 'none';
-            particle.style.zIndex = '0';
-            
-            const x = Math.random() * window.innerWidth;
-            const y = Math.random() * window.innerHeight;
-            
-            particle.style.left = x + 'px';
-            particle.style.top = y + 'px';
-            
-            document.body.appendChild(particle);
-            
-            // Animate particle
-            const duration = 3000 + Math.random() * 2000;
-            const animation = particle.animate([
-                { transform: 'translateY(0px)', opacity: 0.3 },
-                { transform: 'translateY(-100px)', opacity: 0 }
-            ], {
-                duration: duration,
-                easing: 'ease-out'
+        // Smart folder state management
+        const STORAGE_KEY = 'emacs_startpage_folders';
+        
+        function saveFolderStates() {
+            const states = {};
+            document.querySelectorAll('.folder').forEach(folder => {
+                const title = folder.querySelector('.folder-title').textContent.trim();
+                states[title] = !folder.classList.contains('closed');
             });
-            
-            animation.addEventListener('finish', () => {
-                particle.remove();
-            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(states));
         }
 
-        // Create particles periodically
-        setInterval(createParticle, 2000);
-        
-        // Focus search input on '/' key press
-        document.addEventListener('keydown', function(e) {
-            if (e.key === '/' && e.target !== searchInput) {
+        function loadFolderStates() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const states = JSON.parse(saved);
+                document.querySelectorAll('.folder').forEach(folder => {
+                    const title = folder.querySelector('.folder-title').textContent.trim();
+                    if (states[title] === false) {
+                        folder.classList.add('closed');
+                    }
+                });
+            }
+        }
+
+        // Toggle folder
+        function toggleFolder(header) {
+            const folder = header.parentElement;
+            folder.classList.toggle('closed');
+            saveFolderStates();
+        }
+
+        // Load saved states on page load
+        loadFolderStates();
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        let searchActive = false;
+
+        document.addEventListener('keydown', (e) => {
+            // Space to activate search
+            if (e.code === 'Space' && !searchActive && document.activeElement !== searchInput) {
                 e.preventDefault();
                 searchInput.focus();
+                searchActive = true;
+            }
+
+            // Escape to clear and unfocus
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                searchInput.blur();
+                searchActive = false;
             }
         });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const query = searchInput.value.trim();
+                
+                if (query.startsWith('g/') || query.startsWith('/g/')) {
+                    window.location.href = 'https://boards.4chan.org/g/';
+                } else if (query.includes('pol') && (query.startsWith('/') || query.startsWith('g/'))) {
+                    window.location.href = 'https://boards.4chan.org/pol/';
+                } else if (query.startsWith('r/')) {
+                    const subreddit = query.substring(2);
+                    window.location.href = `https://reddit.com/r/${subreddit}`;
+                } else if (query.startsWith('yt/')) {
+                    const videoQuery = query.substring(3);
+                    window.location.href = `https://youtube.com/results?search_query=${encodeURIComponent(videoQuery)}`;
+                } else if (query) {
+                    window.location.href = `https://duckduckgo.com/?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+
+        // Update position in modeline
+        searchInput.addEventListener('input', () => {
+            const pos = searchInput.selectionStart;
+            document.getElementById('position').textContent = `1:${pos}`;
+        });
+
+        searchInput.addEventListener('click', () => {
+            const pos = searchInput.selectionStart;
+            document.getElementById('position').textContent = `1:${pos}`;
+        });
+
+        // Console message
+        console.log('%c~/.startpage loaded successfully', 'color: #fabd2f; font-weight: bold; font-size: 14px;');
     </script>
 </body>
 </html>
